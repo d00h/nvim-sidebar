@@ -1,0 +1,44 @@
+local Job = require('plenary.job')
+
+local SIDEBAR_TAG = 'sidebar'
+
+-- -------------------------------------------------------
+local function safe_nvim_buf_get_var(bufnr, name, default_value)
+    local success, value = pcall(function()
+        return vim.api.nvim_buf_get_var(bufnr, name)
+    end)
+    if success then
+        return value
+    else
+        return default_value
+    end
+end
+
+-- ---------------------------------------------------------------------------
+
+local M = {}
+
+M.delete_all = function()
+  for _, bufnr in pairs(vim.api.nvim_list_bufs()) do
+    if safe_nvim_buf_get_var(bufnr, SIDEBAR_TAG, false) then
+      vim.api.nvim_buf_delete(bufnr, {force=true})
+    end
+  end
+end
+
+M.create = function(name)
+    local bufnr = vim.api.nvim_create_buf(true, false)
+    vim.api.nvim_buf_set_option(bufnr, 'buftype', 'nofile')
+    vim.api.nvim_buf_set_name(bufnr, name)
+    vim.api.nvim_buf_set_var(bufnr, SIDEBAR_TAG, true)
+    return bufnr
+end
+
+M.update = function(bufnr, lines)
+    vim.api.nvim_buf_set_option(bufnr, 'modifiable', true)
+    local last_line = vim.api.nvim_buf_line_count(bufnr)
+    vim.api.nvim_buf_set_lines(bufnr, 0, last_line, false, lines)
+    vim.api.nvim_buf_set_option(bufnr, 'modifiable', false)
+end
+
+return M
