@@ -41,4 +41,9 @@ M.update = function(bufnr, lines)
     vim.api.nvim_buf_set_option(bufnr, 'modifiable', false)
 end
 
+M.get_current_line = function(win, bufnr)
+    local row, _ = unpack(vim.api.nvim_win_get_cursor(win))
+    return table.concat(vim.api.nvim_buf_get_lines(bufnr, row - 1, row, false), '')
+end
+
 return M

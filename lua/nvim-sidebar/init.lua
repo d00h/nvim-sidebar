@@ -14,7 +14,8 @@ end
 
 M.ls = command('nvim-sidebar.impl.ls')
 M.git_status = command('nvim-sidebar.impl.git_status')
-
+M.kubectl_get_namespaces = command('nvim-sidebar.impl.kubectl_get_namespaces')
+M.kubectl_get_pods = command('nvim-sidebar.impl.kubectl_get_pods')
 
 M.execute = function(args)
   local command, argv = cmdline.split(args)
