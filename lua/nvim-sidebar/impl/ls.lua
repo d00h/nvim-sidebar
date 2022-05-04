@@ -85,7 +85,7 @@ M.open_child = function()
     end
 
     if selected:is_file() then
-        vim.cmd('edit ' .. tostring(selected))
+            vim.cmd('wincmd l | edit ' .. tostring(selected))
         return
     end
 end
