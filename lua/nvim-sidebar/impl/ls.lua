@@ -1,19 +1,15 @@
 local create_buffer = require('nvim-sidebar.buffer').create
 local update_buffer = require('nvim-sidebar.buffer').update
 local delete_all_buffers = require('nvim-sidebar.buffer').delete_all
+local get_current_line = require('nvim-sidebar.buffer').get_current_line
 
 local show_window = require('nvim-sidebar.window').show
 
 local Job = require('plenary.job')
 local Path = require('plenary.path')
 
-local cache = {}
-
 -- -----------------------------------------------------------------------------
-local function get_current_line(win, bufnr)
-    local row, _ = unpack(vim.api.nvim_win_get_cursor(win))
-    return table.concat(vim.api.nvim_buf_get_lines(bufnr, row - 1, row, false), '')
-end
+local cache = {}
 
 local function store_cache(win)
     local cwd = vim.fn.getcwd()
@@ -34,9 +30,15 @@ M.setup_keys = function(bufnr)
     local opts = {noremap = true, silent = true}
     local nvim_buf_set_keymap = vim.api.nvim_buf_set_keymap
 
-    nvim_buf_set_keymap(bufnr, 'n', '<cr>', "<cmd>lua require('nvim-sidebar.impl.ls').open_child()<cr>", opts)
-    nvim_buf_set_keymap(bufnr, 'n', 'l', "<cmd>lua require('nvim-sidebar.impl.ls').open_child()<cr>", opts)
-    nvim_buf_set_keymap(bufnr, 'n', 'h', "<cmd>lua require('nvim-sidebar.impl.ls').open_parent()<cr>", opts)
+    nvim_buf_set_keymap(bufnr, 'n', '<cr>',
+                        "<cmd>lua require('nvim-sidebar.impl.ls').open_child()<cr>",
+                        opts)
+    nvim_buf_set_keymap(bufnr, 'n', 'l',
+                        "<cmd>lua require('nvim-sidebar.impl.ls').open_child()<cr>",
+                        opts)
+    nvim_buf_set_keymap(bufnr, 'n', 'h',
+                        "<cmd>lua require('nvim-sidebar.impl.ls').open_parent()<cr>",
+                        opts)
     nvim_buf_set_keymap(bufnr, 'n', 'q', "<cmd>bdelete<cr>", opts)
 end
 
@@ -78,7 +80,7 @@ M.open_child = function()
     end
 
     if selected:is_file() then
-            vim.cmd('wincmd l | edit ' .. tostring(selected))
+        vim.cmd('wincmd l | edit ' .. tostring(selected))
         return
     end
 end

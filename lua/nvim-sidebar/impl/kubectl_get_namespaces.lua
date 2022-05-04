@@ -8,22 +8,24 @@ local show_window = require('nvim-sidebar.window').show
 local Job = require('plenary.job')
 local Path = require('plenary.path')
 
-----
-
+-- -----------------------------------------------------------------------------
 local M = {}
+
+local NAMESPACE = 'nvim-sidebar.impl.kubectl_get_namespaces'
 
 M.setup_keys = function(bufnr)
     local opts = {noremap = true, silent = true}
     local nvim_buf_set_keymap = vim.api.nvim_buf_set_keymap
 
-    nvim_buf_set_keymap(bufnr, 'n', '<cr>', "<cmd>lua require('nvim-sidebar.impl.git_status').open_child()<cr>", opts)
-    nvim_buf_set_keymap(bufnr, 'n', 'l', "<cmd>lua require('nvim-sidebar.impl.git_status').open_child()<cr>", opts)
+
+    nvim_buf_set_keymap(bufnr, 'n', '<cr>', "<cmd>lua require('" .. NAMESPACE .. "').open_child()<cr>", opts)
+    nvim_buf_set_keymap(bufnr, 'n', 'l', "<cmd>lua require('" .. NAMESPACE .. "').open_child()<cr>", opts)
+
+    -- nvim_buf_set_keymap(bufnr, 'n', 'h', "<cmd>lua require('nvim-sidebar.impl.ls').open_parent()<cr>", opts)
     nvim_buf_set_keymap(bufnr, 'n', 'q', "<cmd>bdelete<cr>", opts)
 end
 
 M.open = function(args)
-    if args ~= nil and #args > 0 then vim.api.nvim_set_current_dir(args[1]) end
-
     delete_all_buffers()
 
     local bufnr = create_buffer('')
@@ -39,20 +41,26 @@ M.open = function(args)
     end
 
     Job:new({
-        command = 'git',
-        args = {'status', '--short', unpack(args)},
+        command = 'kubectl',
+        args = {'get', 'namespaces', '--no-headers=true', unpack(args)},
         on_exit = on_exit
     }):start()
+
 end
 
 M.open_child = function()
-  local current_line =get_current_line(0, 0)
-  local filename = string.gsub(current_line, '^%s*%w+%s+', '')
-  local selected = Path:new(filename)
+  local current_line = get_current_line(0, 0)
+  local namespace = string.match(current_line, '^%w+')
 
-  if selected:is_file() then
-      vim.cmd('wincmd l | edit ' .. tostring(selected))
+  if namespace ~= nil then
+    vim.cmd('Sidebar kubectl_get_pods --namespace=' .. namespace)
   end
+
+end
+
+M.open_parent = function()
+    local current = Path:new(vim.fn.getcwd())
+    M.open({tostring(current:parent())})
 end
 
 return M
