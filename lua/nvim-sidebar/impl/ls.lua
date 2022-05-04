@@ -25,8 +25,6 @@ local function restore_cache(win)
     local cwd = vim.fn.getcwd()
     local cursor = cache[cwd]
     if cursor == nil then return end
-    local line_count = vim.api.nvim_buf_line_count(0)
-    print(vim.inspect(cursor), line_count)
     vim.api.nvim_win_set_cursor(win, cursor)
 end
 -- -----------------------------------------------------------------------------
@@ -44,6 +42,10 @@ M.setup_keys = function(bufnr)
 
     vim.api.nvim_set_keymap('n', 'h',
                             "<cmd>lua require('nvim-sidebar.impl.ls').open_parent()<cr>",
+                            opts)
+
+    vim.api.nvim_set_keymap('n', 'q',
+                            "<cmd>bdelete<cr>",
                             opts)
 end
 
