@@ -1,3 +1,4 @@
 bck/
 .nvimrc
 justfile
+lua/plenary
