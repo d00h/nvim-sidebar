@@ -32,21 +32,12 @@ local M = {}
 
 M.setup_keys = function(bufnr)
     local opts = {noremap = true, silent = true}
-    vim.api.nvim_set_keymap('n', '<cr>',
-                            "<cmd>lua require('nvim-sidebar.impl.ls').open_child()<cr>",
-                            opts)
+    local nvim_buf_set_keymap = vim.api.nvim_buf_set_keymap
 
-    vim.api.nvim_set_keymap('n', 'l',
-                            "<cmd>lua require('nvim-sidebar.impl.ls').open_child()<cr>",
-                            opts)
-
-    vim.api.nvim_set_keymap('n', 'h',
-                            "<cmd>lua require('nvim-sidebar.impl.ls').open_parent()<cr>",
-                            opts)
-
-    vim.api.nvim_set_keymap('n', 'q',
-                            "<cmd>bdelete<cr>",
-                            opts)
+    nvim_buf_set_keymap(bufnr, 'n', '<cr>', "<cmd>lua require('nvim-sidebar.impl.ls').open_child()<cr>", opts)
+    nvim_buf_set_keymap(bufnr, 'n', 'l', "<cmd>lua require('nvim-sidebar.impl.ls').open_child()<cr>", opts)
+    nvim_buf_set_keymap(bufnr, 'n', 'h', "<cmd>lua require('nvim-sidebar.impl.ls').open_parent()<cr>", opts)
+    nvim_buf_set_keymap(bufnr, 'n', 'q', "<cmd>bdelete<cr>", opts)
 end
 
 M.open = function(args)
