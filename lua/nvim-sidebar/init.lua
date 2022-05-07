@@ -1,6 +1,4 @@
-local Buffer = require('nvim-sidebar.buffer')
-local Window = require('nvim-sidebar.window')
-local cmdline  = require('nvim-sidebar.cmdline')
+local cmdline = require('nvim-sidebar.cmdline')
 
 local M = {}
 
@@ -18,13 +16,22 @@ M.kubectl_get_namespaces = command('nvim-sidebar.impl.kubectl_get_namespaces')
 M.kubectl_get_pods = command('nvim-sidebar.impl.kubectl_get_pods')
 
 M.execute = function(args)
-  local command, argv = cmdline.split(args)
-  local fn = M[command]
-  if fn == nil then
-    vim.api.nvim_echo({{'no command',  "WarningMsg"}}, false, {})
-  else
-    fn(argv)
-  end
+    local cmd, argv = cmdline.split(args)
+    local fn = M[cmd]
+    if fn == nil then
+        vim.api.nvim_echo({{'no command', "WarningMsg"}}, false, {})
+    else
+        fn(argv)
+    end
 end
+
+-- nargs = 1,
+-- complete = function(ArgLead, CmdLine, CursorPos)
+--   return {
+--     'strawberry',
+--     'star',
+--     'stellar',
+--   }
+-- end,
 
 return M
