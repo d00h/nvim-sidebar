@@ -28,7 +28,7 @@ M.delete_all = function()
 end
 
 M.create = function(name)
-    local bufnr = vim.api.nvim_create_buf(true, false)
+    local bufnr = vim.api.nvim_create_buf(false, false)
     vim.api.nvim_buf_set_option(bufnr, 'buftype', 'nofile')
     vim.api.nvim_buf_set_name(bufnr, name)
     vim.api.nvim_buf_set_var(bufnr, SIDEBAR_TAG, true)
