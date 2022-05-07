@@ -22,8 +22,6 @@ M.setup_keys = function(bufnr)
 end
 
 M.open = function(args)
-    if args ~= nil and #args > 0 then vim.api.nvim_set_current_dir(args[1]) end
-
     delete_all_buffers()
 
     local bufnr = create_buffer('')

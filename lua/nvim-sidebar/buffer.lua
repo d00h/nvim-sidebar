@@ -3,7 +3,12 @@ local Job = require('plenary.job')
 local SIDEBAR_TAG = 'sidebar'
 
 -- -------------------------------------------------------
-local function safe_nvim_buf_get_var(bufnr, name, default_value)
+
+-- ---------------------------------------------------------------------------
+
+local M = {}
+
+M.get_var = function(bufnr, name, default_value)
     local success, value = pcall(function()
         return vim.api.nvim_buf_get_var(bufnr, name)
     end)
@@ -14,16 +19,12 @@ local function safe_nvim_buf_get_var(bufnr, name, default_value)
     end
 end
 
--- ---------------------------------------------------------------------------
-
-local M = {}
-
 M.delete_all = function()
-  for _, bufnr in pairs(vim.api.nvim_list_bufs()) do
-    if safe_nvim_buf_get_var(bufnr, SIDEBAR_TAG, false) then
-      vim.api.nvim_buf_delete(bufnr, {force=true})
+    for _, bufnr in pairs(vim.api.nvim_list_bufs()) do
+        if M.get_var(bufnr, SIDEBAR_TAG, false) then
+            vim.api.nvim_buf_delete(bufnr, {force = true})
+        end
     end
-  end
 end
 
 M.create = function(name)
@@ -43,7 +44,8 @@ end
 
 M.get_current_line = function(win, bufnr)
     local row, _ = unpack(vim.api.nvim_win_get_cursor(win))
-    return table.concat(vim.api.nvim_buf_get_lines(bufnr, row - 1, row, false), '')
+    return table.concat(vim.api.nvim_buf_get_lines(bufnr, row - 1, row, false),
+                        '')
 end
 
 return M
