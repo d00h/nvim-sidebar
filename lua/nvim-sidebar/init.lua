@@ -11,6 +11,7 @@ local function command(namespace)
 end
 
 M.ls = command('nvim-sidebar.impl.ls')
+M.menu = command('nvim-sidebar.impl.menu')
 M.git_status = command('nvim-sidebar.impl.git_status')
 M.kubectl_get_namespaces = command('nvim-sidebar.impl.kubectl_get_namespaces')
 M.kubectl_get_pods = command('nvim-sidebar.impl.kubectl_get_pods')
