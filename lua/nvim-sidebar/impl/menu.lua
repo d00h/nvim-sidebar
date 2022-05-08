@@ -38,7 +38,7 @@ local default_menu = {
   '',
   '# Sentry',
   '',
-  '* Projects',
+  {'* Projects', 'Sidebar sentry_find_projects'},
   '* Issues',
 }
 
