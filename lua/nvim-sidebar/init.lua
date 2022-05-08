@@ -18,6 +18,7 @@ M.git_branch = command('nvim-sidebar.impl.git_branch')
 M.git_show_commit = command('nvim-sidebar.impl.git_show_commit')
 M.git_status = command('nvim-sidebar.impl.git_status')
 M.git_log = command('nvim-sidebar.impl.git_log')
+M.git_find_roots = command('nvim-sidebar.impl.git_find_roots')
 
 M.kubectl_get_contexts = command('nvim-sidebar.impl.kubectl_get_contexts')
 M.kubectl_get_namespaces = command('nvim-sidebar.impl.kubectl_get_namespaces')
