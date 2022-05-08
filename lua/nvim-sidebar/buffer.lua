@@ -46,4 +46,21 @@ M.get_current_line = function(win, bufnr)
                         '')
 end
 
+M.update_from_job = function(bufnr, command, args)
+    vim.api.nvim_buf_set_option(bufnr, 'buftype', 'nofile')
+    vim.api.nvim_win_set_buf(0, bufnr)
+
+    M.update(bufnr, {'...waiting...'})
+
+    local on_exit = function(job, errorlevel)
+        vim.schedule(function()
+            M.update(bufnr, job:result())
+            local last_line = vim.api.nvim_buf_line_count(bufnr)
+            vim.api.nvim_win_set_cursor(0, {last_line, 0})
+        end)
+    end
+
+    Job:new({command = command, args = args, on_exit = on_exit}):start()
+end
+
 return M

@@ -24,6 +24,9 @@ M.kubectl_get_contexts = command('nvim-sidebar.impl.kubectl_get_contexts')
 M.kubectl_get_namespaces = command('nvim-sidebar.impl.kubectl_get_namespaces')
 M.kubectl_get_pods = command('nvim-sidebar.impl.kubectl_get_pods')
 
+M.sentry_find_projects = command('nvim-sidebar.impl.sentry_find_projects')
+M.sentry_find_issues = command('nvim-sidebar.impl.sentry_find_issues')
+
 M.execute = function(args)
     local cmd, argv = cmdline.split(args)
     local fn = M[cmd]
