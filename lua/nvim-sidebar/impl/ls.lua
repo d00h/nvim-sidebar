@@ -89,7 +89,7 @@ M.open_child = function()
     local selected = Path:new(vim.fn.getcwd(), get_current_line(0, 0))
 
     if selected:is_dir() then
-        M.open({tostring(selected)})
+        vim.cmd('Sidebar ls ' .. tostring(selected))
         return
     end
 
@@ -101,7 +101,7 @@ end
 
 M.open_parent = function()
     local current = Path:new(vim.fn.getcwd())
-    M.open({tostring(current:parent())})
+    vim.cmd('Sidebar ls ' .. tostring(current:parent()))
 end
 
 return M
