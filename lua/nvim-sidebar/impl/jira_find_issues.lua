@@ -9,7 +9,6 @@ local show_window = require('nvim-sidebar.window').show
 local create_script_args = require('nvim-sidebar.script').create_args
 
 local Job = require('plenary.job')
-local Path = require('plenary.path')
 
 
 local M = {}
@@ -37,7 +36,6 @@ M.open = function(args)
 
     local on_exit = function(job, errorlevel)
         vim.schedule(function()
-
             update_buffer(bufnr, job:result())
             M.setup_keys(bufnr)
         end)

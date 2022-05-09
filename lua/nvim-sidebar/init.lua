@@ -11,6 +11,7 @@ local function command(namespace)
 end
 
 M.buffers = command('nvim-sidebar.impl.buffers')
+M.ag = command('nvim-sidebar.impl.ag')
 M.ls = command('nvim-sidebar.impl.ls')
 M.menu = command('nvim-sidebar.impl.menu')
 

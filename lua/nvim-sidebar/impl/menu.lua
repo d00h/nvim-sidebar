@@ -14,7 +14,7 @@ local default_menu = {
   {'* Buffers', 'Sidebar buffers'},
   {'* Files', 'Sidebar ls'},
   '* Bookmarks',
-  '* Todo',
+  {'* Todo', 'Sidebar ag command'},
   '* Agenda',
   '',
   '# Git',
