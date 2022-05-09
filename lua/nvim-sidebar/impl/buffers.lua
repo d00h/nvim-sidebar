@@ -2,8 +2,6 @@ local delete_all_buffers = require('nvim-sidebar.buffer').delete_all
 local create_buffer = require('nvim-sidebar.buffer').create
 local update_buffer = require('nvim-sidebar.buffer').update
 
-local get_buffer_var = require('nvim-sidebar.buffer').get_var
-
 local show_window = require('nvim-sidebar.window').show
 local nvim_buf_set_keymap = vim.api.nvim_buf_set_keymap
 
@@ -14,9 +12,11 @@ local M = {}
 local function find_buffers()
     local result = {}
     for _, bufnr in ipairs(vim.api.nvim_list_bufs()) do
-        local bufname = vim.api.nvim_buf_get_name(bufnr)
-        if bufname == '' then bufname = 'unnamed' end
-        table.insert(result, string.format('%d. %s', bufnr, bufname))
+        if vim.api.nvim_buf_is_loaded(bufnr) then
+            local bufname = vim.api.nvim_buf_get_name(bufnr)
+            if bufname == '' then bufname = 'unnamed' end
+            table.insert(result, string.format('%d. %s', bufnr, bufname))
+        end
     end
     return result
 end
@@ -38,6 +38,7 @@ M.setup_keys = function(bufnr)
                             "').open_child()<cr>", opts)
     nvim_buf_set_keymap(bufnr, 'n', 'l', "<cmd>lua require('" .. NAMESPACE ..
                             "').open_child()<cr>", opts)
+    nvim_buf_set_keymap(bufnr, 'n', 'j', "<cmd>Sidebar menu<cr>", opts)
     nvim_buf_set_keymap(bufnr, 'n', 'q', "<cmd>bdelete<cr>", opts)
 end
 

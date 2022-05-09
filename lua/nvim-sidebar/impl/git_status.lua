@@ -18,6 +18,7 @@ M.setup_keys = function(bufnr)
 
     nvim_buf_set_keymap(bufnr, 'n', '<cr>', "<cmd>lua require('nvim-sidebar.impl.git_status').open_child()<cr>", opts)
     nvim_buf_set_keymap(bufnr, 'n', 'l', "<cmd>lua require('nvim-sidebar.impl.git_status').open_child()<cr>", opts)
+    nvim_buf_set_keymap(bufnr, 'n', 'j', "<cmd>Sidebar menu<cr>", opts)
     nvim_buf_set_keymap(bufnr, 'n', 'q', "<cmd>bdelete<cr>", opts)
 end
 
@@ -45,7 +46,7 @@ end
 
 M.open_child = function()
   local current_line =get_current_line(0, 0)
-  local filename = string.gsub(current_line, '^%s*%w+%s+', '')
+  local filename = string.gsub(current_line, '^%s*[%w?]+%s+', '')
   local selected = Path:new(filename)
 
   if selected:is_file() then
