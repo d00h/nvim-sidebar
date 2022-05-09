@@ -27,6 +27,8 @@ M.kubectl_get_pods = command('nvim-sidebar.impl.kubectl_get_pods')
 M.sentry_find_projects = command('nvim-sidebar.impl.sentry_find_projects')
 M.sentry_find_issues = command('nvim-sidebar.impl.sentry_find_issues')
 
+M.jira_find_issues = command('nvim-sidebar.impl.jira_find_issues')
+
 M.execute = function(args)
     local cmd, argv = cmdline.split(args)
     local fn = M[cmd]
