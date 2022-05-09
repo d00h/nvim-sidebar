@@ -2,6 +2,7 @@ local create_buffer = require('nvim-sidebar.buffer').create
 local update_buffer = require('nvim-sidebar.buffer').update
 local delete_all_buffers = require('nvim-sidebar.buffer').delete_all
 local get_current_line = require('nvim-sidebar.buffer').get_current_line
+local last_pos = require 'nvim-sidebar.last_pos'
 
 local show_window = require('nvim-sidebar.window').show
 local Job = require 'plenary.job'
@@ -11,23 +12,7 @@ local nvim_buf_create_user_command = vim.api.nvim_buf_create_user_command
 local nvim_buf_set_keymap = vim.api.nvim_buf_set_keymap
 
 local NAMESPACE = "'nvim-sidebar.impl.ls'"
--- -----------------------------------------------------------------------------
-local cache = {}
 
-local function store_cache(win)
-  local cwd = vim.fn.getcwd()
-  local cursor = vim.api.nvim_win_get_cursor(win)
-  cache[cwd] = cursor
-end
-
-local function restore_cache(win)
-  local cwd = vim.fn.getcwd()
-  local cursor = cache[cwd]
-  if cursor == nil then
-    return
-  end
-  vim.api.nvim_win_set_cursor(win, cursor)
-end
 -- -----------------------------------------------------------------------------
 local function open_file(filename)
   vim.cmd('wincmd l | edit ' .. filename)
@@ -81,7 +66,7 @@ M.open = function(args)
       update_buffer(bufnr, job:result())
       M.setup_keys(bufnr)
       M.setup_commands(bufnr)
-      restore_cache(win, bufnr)
+      last_pos.restore_cursor(win, NAMESPACE, vim.fn.getcwd())
     end)
   end
 
@@ -100,7 +85,7 @@ M.open = function(args)
 end
 
 M.open_child = function()
-  store_cache(0)
+  last_pos.store_cursor(0, NAMESPACE, vim.fn.getcwd())
 
   local selected = Path:new(vim.fn.getcwd(), get_current_line(0, 0))
 
