@@ -9,6 +9,8 @@ from typing import Iterable
 
 
 def find_python_sources(path: str) -> Iterable[str]:
+    path = os.path.expanduser(path)
+    path = os.path.expandvars(path)
     if os.path.isfile(path):
         yield path
     else:
@@ -19,11 +21,12 @@ def find_python_sources(path: str) -> Iterable[str]:
                 yield os.path.join(root, file)
 
 
-def parse_python_source(filename) -> Iterable[ast.AST]:
-    with open(filename, 'rt') as stream:
-        source = stream.read()
-        parsed = ast.parse(source, filename)
-        yield from ast.walk(parsed)
+def load_python_source(filename) -> str:
+    try:
+        with open(filename, 'rt') as stream:
+            return stream.read()
+    except UnicodeDecodeError:
+        return None
 
 
 def get_ast_name(node: ast.AST):
@@ -59,14 +62,17 @@ class PythonFunction:
 
     @classmethod
     def find(cls, filename) -> Iterable['PythonDecorator']:
-        for node in parse_python_source(filename):
-            if isinstance(node, ast.FunctionDef):
-                for decorator in node.decorator_list:
-                    yield cls(
-                        filename=filename,
-                        line=node.lineno,
-                        name=get_ast_name(node)
-                    )
+        source = load_python_source(filename)
+        if source:
+            parsed = ast.parse(source, filename)
+            for node in ast.walk(parsed):
+                if isinstance(node, ast.FunctionDef):
+                    for decorator in node.decorator_list:
+                        yield cls(
+                            filename=filename,
+                            line=node.lineno,
+                            name=get_ast_name(node)
+                        )
 
 
 @dataclass
@@ -79,15 +85,18 @@ class PythonDecorator:
 
     @classmethod
     def find(cls, filename) -> Iterable['PythonDecorator']:
-        for node in parse_python_source(filename):
-            if isinstance(node, ast.FunctionDef):
-                for decorator in node.decorator_list:
-                    yield cls(
-                        filename=filename,
-                        line=node.lineno,
-                        name=get_ast_name(node),
-                        decorator=get_ast_name(decorator),
-                    )
+        source = load_python_source(filename)
+        if source:
+            parsed = ast.parse(source, filename)
+            for node in ast.walk(parsed):
+                if isinstance(node, ast.FunctionDef):
+                    for decorator in node.decorator_list:
+                        yield cls(
+                            filename=filename,
+                            line=node.lineno,
+                            name=get_ast_name(node),
+                            decorator=get_ast_name(decorator),
+                        )
 
 
 def create_parser() -> ArgumentParser:
@@ -96,7 +105,7 @@ def create_parser() -> ArgumentParser:
     subparsers = parser.add_subparsers()
     find_decorators_parser = subparsers.add_parser('find-decorators')
     find_decorators_parser.add_argument('decorator_pattern', help='regexp')
-    find_decorators_parser.add_argument('path', nargs='?') 
+    find_decorators_parser.add_argument('path', nargs='?')
     find_decorators_parser.set_defaults(command=command_find_decorators)
 
     find_functions_parser = subparsers.add_parser('find-functions')
