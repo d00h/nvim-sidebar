@@ -53,6 +53,19 @@ M.setup_commands = function(bufnr)
     nvim_buf_create_user_command(bufnr, 'Mkfile', function(a)
         open_file(a['args'])
     end, {nargs = 1})
+
+    nvim_buf_create_user_command(bufnr, 'Mkdir', function(a)
+        os.execute('mkdir ' .. a['args'])
+        vim.cmd('Sidebar ls')
+    end, {nargs = 1})
+
+    nvim_buf_create_user_command(bufnr, 'Rename', function(a)
+        local selected = Path:new(vim.fn.getcwd(), get_current_line(0, 0))
+        if selected:exists() then
+            os.execute('mv ' .. tostring(selected) .. ' ' .. a['args'])
+            vim.cmd('Sidebar ls')
+        end
+    end, {nargs = 1})
 end
 
 M.open = function(args)
