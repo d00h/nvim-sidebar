@@ -36,10 +36,14 @@ local default_menu = {
   '* Tests',
   '* Fixtures',
   '',
+  '# Jira ',
+  '',
+  {'* Issues', 'Sidebar jira_find_issues project=bil'},
+  '',
   '# Sentry',
   '',
   {'* Projects', 'Sidebar sentry_find_projects'},
-  '* Issues',
+  {'* Issues',   'Sidebar sentry_find_issues ururu'},
 }
 
 local MENU_TAG = 'menu'
