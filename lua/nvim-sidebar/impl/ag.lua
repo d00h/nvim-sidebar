@@ -34,7 +34,7 @@ M.setup_keys = function(bufnr)
     nvim_buf_set_keymap(bufnr, 'n', '<c-r>',
                         "<cmd>lua require(" .. NAMESPACE .. ").open({})<cr>",
                         opts)
-    nvim_buf_set_keymap(bufnr, 'n', 'j', "<cmd>Sidebar menu<cr>", opts)
+    nvim_buf_set_keymap(bufnr, 'n', 'h', "<cmd>Sidebar menu<cr>", opts)
     nvim_buf_set_keymap(bufnr, 'n', 'q', "<cmd>bdelete<cr>", opts)
 
 end
