@@ -1,10 +1,9 @@
-
 local M = {}
 
 M.split = function(args)
   local head = nil
   local tail = {}
-  for idx, arg  in ipairs(args) do
+  for idx, arg in ipairs(args) do
     if idx == 1 then
       head = arg
     else

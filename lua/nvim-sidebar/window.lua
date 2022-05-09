@@ -4,7 +4,6 @@ local SIDEBAR_TAG = 'sidebar'
 
 -- -------------------------------------------------------
 local function safe_nvim_win_get_var(wnd, name, default_value)
-  
   local success, value = pcall(function()
     return vim.api.nvim_win_get_var(wnd, name)
   end)
@@ -16,7 +15,7 @@ local function safe_nvim_win_get_var(wnd, name, default_value)
 end
 
 local function create_sidebar()
-  vim.cmd('40vsplit')
+  vim.cmd '40vsplit'
   local w = vim.api.nvim_get_current_win()
   vim.api.nvim_win_set_option(w, 'wrap', false)
   vim.api.nvim_win_set_option(w, 'cursorline', true)
@@ -25,12 +24,12 @@ local function create_sidebar()
 end
 
 local function get_sidebar()
-    for _, w in ipairs(vim.api.nvim_list_wins()) do
-        if safe_nvim_win_get_var(w, SIDEBAR_TAG, false) then
-            return w
-        end
+  for _, w in ipairs(vim.api.nvim_list_wins()) do
+    if safe_nvim_win_get_var(w, SIDEBAR_TAG, false) then
+      return w
     end
-    return nil
+  end
+  return nil
 end
 
 -- -------------------------------------------------------

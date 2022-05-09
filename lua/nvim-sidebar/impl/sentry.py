@@ -1,7 +1,7 @@
 import sys
 from argparse import ArgumentParser
 from argparse import Namespace as ArgumentNamespace
-from os import path, getenv
+from os import getenv, path
 from pprint import pprint
 
 import requests
@@ -57,7 +57,6 @@ class SentryClient:
     def get_event(self, organization, project, event):
         resp = self.request(f'api/0/projects/{organization}/{project}/events/{event}/')
         return resp.json()
-
 
 
 def create_parser() -> ArgumentParser:
