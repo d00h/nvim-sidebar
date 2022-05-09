@@ -2,7 +2,7 @@ local create_buffer = require('nvim-sidebar.buffer').create
 local update_buffer = require('nvim-sidebar.buffer').update
 local delete_all_buffers = require('nvim-sidebar.buffer').delete_all
 local get_current_line = require('nvim-sidebar.buffer').get_current_line
-
+local last_pos = require('nvim-sidebar.last_pos')
 local show_window = require('nvim-sidebar.window').show
 
 local Job = require('plenary.job')
@@ -36,6 +36,7 @@ M.open = function(args)
     local on_exit = function(job, errorlevel)
         vim.schedule(function()
             update_buffer(bufnr, job:result())
+            last_pos.restore_cursor(win, NAMESPACE)
             M.setup_keys(bufnr)
         end)
     end
@@ -49,6 +50,7 @@ M.open = function(args)
 end
 
 M.open_child = function()
+  last_pos.store_cursor(0, NAMESPACE)
   local current_line = get_current_line(0, 0)
   local namespace = string.match(current_line, '^%w+')
 

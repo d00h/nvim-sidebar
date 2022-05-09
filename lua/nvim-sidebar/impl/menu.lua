@@ -1,6 +1,7 @@
 local delete_all_buffers = require('nvim-sidebar.buffer').delete_all
 local create_buffer = require('nvim-sidebar.buffer').create
 local update_buffer = require('nvim-sidebar.buffer').update
+local last_pos = require('nvim-sidebar.last_pos')
 
 local get_buffer_var = require('nvim-sidebar.buffer').get_var
 
@@ -83,9 +84,12 @@ M.open = function(args)
     M.setup_keys(bufnr)
 
     update_buffer(bufnr, prepare_menu(current_menu))
+    last_pos.restore_cursor(win, NAMESPACE)
 end
 
 M.open_child = function()
+    last_pos.store_cursor(0, NAMESPACE)
+
     local row, _ = unpack(vim.api.nvim_win_get_cursor(0))
     local current_menu = get_buffer_var(0, MENU_TAG)
 
