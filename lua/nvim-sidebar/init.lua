@@ -30,6 +30,8 @@ M.sentry_find_issues = command('nvim-sidebar.impl.sentry_find_issues')
 
 M.jira_find_issues = command('nvim-sidebar.impl.jira_find_issues')
 
+M.python_ast = command('nvim-sidebar.impl.python-ast')
+
 M.execute = function(args)
     local cmd, argv = cmdline.split(args)
     local fn = M[cmd]
