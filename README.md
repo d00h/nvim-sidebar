@@ -1,3 +1,7 @@
+# Unificated sidebar for different sources
+
+![menu](./doc/menu.jpg)
+
 # Sidebar
 
 ```vimscript
