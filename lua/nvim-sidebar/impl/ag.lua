@@ -11,7 +11,15 @@ local nvim_buf_set_keymap = vim.api.nvim_buf_set_keymap
 local NAMESPACE = "'nvim-sidebar.impl.ag'"
 -- -----------------------------------------------------------------------------
 local function open_file(filename, row)
-    vim.cmd('wincmd l | edit ' .. filename .. ' | ' .. row)
+  local commands = {
+    'wincmd l',
+    'edit ' .. filename
+  }
+  if row ~= nil then
+    table.insert(commands, row)
+  end
+  
+  vim.cmd(table.concat(commands, ' | '))
 end
 -- -----------------------------------------------------------------------------
 local M = {}
@@ -49,6 +57,7 @@ M.open = function(args)
         end)
     end
 
+    print(vim.inspect(args))
     Job:new({
         command = 'ag',
         args = {'--group', unpack(args)},
