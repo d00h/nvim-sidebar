@@ -1,13 +1,6 @@
-local delete_all_buffers = require('nvim-sidebar.buffer').delete_all
-local create_buffer = require('nvim-sidebar.buffer').create
-local update_buffer = require('nvim-sidebar.buffer').update
-
-local show_window = require('nvim-sidebar.window').show
 local nvim_buf_set_keymap = vim.api.nvim_buf_set_keymap
-
 local NAMESPACE = 'nvim-sidebar.impl.buffers'
-
-local M = {}
+local Sidebar = require 'nvim-sidebar.sidebar'
 
 local function find_buffers()
   local result = {}
@@ -32,7 +25,7 @@ local function get_buffer_by_row(row)
   return -1
 end
 
-M.setup_keys = function(bufnr)
+local function setup_sidebar(bufnr)
   local opts = { noremap = true, silent = true }
 
   nvim_buf_set_keymap(bufnr, 'n', '<cr>', "<cmd>lua require('" .. NAMESPACE .. "').open_child()<cr>", opts)
@@ -41,17 +34,13 @@ M.setup_keys = function(bufnr)
   nvim_buf_set_keymap(bufnr, 'n', 'q', '<cmd>bdelete<cr>', opts)
 end
 
+local M = {}
+
 M.open = function(args)
-  delete_all_buffers()
-
-  local bufnr = create_buffer ''
-  local win = show_window(bufnr)
-
-  vim.api.nvim_buf_set_option(bufnr, 'filetype', 'markdown')
-  M.setup_keys(bufnr)
-
-  local buffers = find_buffers()
-  update_buffer(bufnr, buffers)
+  Sidebar.from_table {
+    lines = find_buffers(),
+    setup_buffer = setup_sidebar,
+  }
 end
 
 M.open_child = function()

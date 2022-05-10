@@ -1,19 +1,10 @@
-local create_buffer = require('nvim-sidebar.buffer').create
-local update_buffer = require('nvim-sidebar.buffer').update
-local delete_all_buffers = require('nvim-sidebar.buffer').delete_all
-local get_current_line = require('nvim-sidebar.buffer').get_current_line
-
-local show_window = require('nvim-sidebar.window').show
-
-local Job = require 'plenary.job'
 local Path = require 'plenary.path'
+local Preview = require 'nvim-sidebar.preview'
+local Sidebar = require 'nvim-sidebar.sidebar'
 
-----
-
-local M = {}
 local NAMESPACE = 'nvim-sidebar.impl.git_status'
 
-M.setup_keys = function(bufnr)
+local function setup_sidebar(bufnr)
   local opts = { noremap = true, silent = true }
   local nvim_buf_set_keymap = vim.api.nvim_buf_set_keymap
 
@@ -23,37 +14,23 @@ M.setup_keys = function(bufnr)
   nvim_buf_set_keymap(bufnr, 'n', 'q', '<cmd>bdelete<cr>', opts)
 end
 
+local M = {}
+
 M.open = function(args)
-  delete_all_buffers()
-
-  local bufnr = create_buffer ''
-  local win = show_window(bufnr)
-
-  update_buffer(bufnr, { '...waiting...' })
-
-  local on_exit = function(job, errorlevel)
-    vim.schedule(function()
-      update_buffer(bufnr, job:result())
-      M.setup_keys(bufnr)
-    end)
-  end
-
-  Job
-    :new({
-      command = 'git',
-      args = { 'status', '--short', unpack(args) },
-      on_exit = on_exit,
-    })
-    :start()
+  Sidebar.from_job {
+    command = 'git',
+    args = { 'status', '--short', unpack(args) },
+    setup_buffer = setup_sidebar,
+  }
 end
 
 M.open_child = function()
-  local current_line = get_current_line(0, 0)
+  local current_line = Sidebar.get_current()
   local filename = string.gsub(current_line, '^%s*[%w?]+%s+', '')
   local selected = Path:new(filename)
 
   if selected:is_file() then
-    vim.cmd('wincmd l | edit ' .. tostring(selected))
+    Preview.from_file(tostring(selected), nil)
   end
 end
 

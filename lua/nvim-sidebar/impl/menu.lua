@@ -1,11 +1,6 @@
-local delete_all_buffers = require('nvim-sidebar.buffer').delete_all
-local create_buffer = require('nvim-sidebar.buffer').create
-local update_buffer = require('nvim-sidebar.buffer').update
-local last_pos = require 'nvim-sidebar.last_pos'
-
-local get_buffer_var = require('nvim-sidebar.buffer').get_var
-
-local show_window = require('nvim-sidebar.window').show
+local LastPos = require 'nvim-sidebar.last_pos'
+local Sidebar = require 'nvim-sidebar.sidebar'
+local get_buffer_var = require('nvim-sidebar.base').get_buffer_var
 local nvim_buf_set_keymap = vim.api.nvim_buf_set_keymap
 
 local default_menu = {
@@ -51,25 +46,16 @@ local default_menu = {
 }
 
 local MENU_TAG = 'menu'
----------------------
-local function prepare_menu(menu)
-  local result = {}
-  for _, menu_item in pairs(menu) do
-    if type(menu_item) == 'string' then
-      table.insert(result, menu_item)
-    else
-      table.insert(result, menu_item[1])
-    end
-  end
-  return result
-end
----------------------
 
 local M = {}
 
 local NAMESPACE = "'nvim-sidebar.impl.menu'"
 
-M.setup_keys = function(bufnr)
+local function setup_sidebar(bufnr)
+  LastPos.restore_cursor(0, NAMESPACE)
+
+  vim.api.nvim_buf_set_option(bufnr, 'filetype', 'markdown')
+
   local opts = { noremap = true, silent = true }
 
   nvim_buf_set_keymap(bufnr, 'n', '<cr>', '<cmd>lua require(' .. NAMESPACE .. ').open_child()<cr>', opts)
@@ -78,27 +64,21 @@ M.setup_keys = function(bufnr)
 end
 
 M.open = function(args)
-  delete_all_buffers()
-
-  local bufnr = create_buffer ''
-  local win = show_window(bufnr)
   local current_menu = default_menu
-
-  vim.api.nvim_buf_set_option(bufnr, 'filetype', 'markdown')
+  local bufnr = Sidebar.from_table {
+    lines = current_menu,
+    setup_buffer = setup_sidebar,
+  }
   vim.api.nvim_buf_set_var(bufnr, MENU_TAG, current_menu)
-  M.setup_keys(bufnr)
-
-  update_buffer(bufnr, prepare_menu(current_menu))
-  last_pos.restore_cursor(win, NAMESPACE)
 end
 
 M.open_child = function()
-  last_pos.store_cursor(0, NAMESPACE)
+  LastPos.store_cursor(0, NAMESPACE)
 
-  local row, _ = unpack(vim.api.nvim_win_get_cursor(0))
+  local row = Sidebar.get_current_row()
   local current_menu = get_buffer_var(0, MENU_TAG)
 
-  if current_menu == nil then
+  if current_menu == nil or row == nil then
     return
   end
 
