@@ -21,6 +21,10 @@ M.git_status = command('nvim-sidebar.impl.git_status')
 M.git_log = command('nvim-sidebar.impl.git_log')
 M.git_find_roots = command('nvim-sidebar.impl.git_find_roots')
 
+M.docker_ps = command('nvim-sidebar.impl.docker_ps')
+M.docker_images = command('nvim-sidebar.impl.docker_images')
+M.docker_volumes = command('nvim-sidebar.impl.docker_volumes')
+
 M.kubectl_get_contexts = command('nvim-sidebar.impl.kubectl_get_contexts')
 M.kubectl_get_namespaces = command('nvim-sidebar.impl.kubectl_get_namespaces')
 M.kubectl_get_pods = command('nvim-sidebar.impl.kubectl_get_pods')
