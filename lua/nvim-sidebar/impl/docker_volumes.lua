@@ -1,18 +1,9 @@
-local create_buffer = require('nvim-sidebar.buffer').create
-local update_buffer = require('nvim-sidebar.buffer').update
-local delete_all_buffers = require('nvim-sidebar.buffer').delete_all
-local get_current_line = require('nvim-sidebar.buffer').get_current_line
-
-local show_window = require('nvim-sidebar.window').show
-
 local Preview = require 'nvim-sidebar.preview'
-local Job = require 'plenary.job'
+local Sidebar = require 'nvim-sidebar.sidebar'
 
 local NAMESPACE = 'nvim-sidebar.impl.docker_volumes'
--- -----------------------------------------------------------------------------
-local M = {}
 
-M.setup_keys = function(bufnr)
+local function setup_sidebar(bufnr)
   local opts = { noremap = true, silent = true }
   local nvim_buf_set_keymap = vim.api.nvim_buf_set_keymap
 
@@ -22,39 +13,28 @@ M.setup_keys = function(bufnr)
   nvim_buf_set_keymap(bufnr, 'n', 'q', '<cmd>bdelete<cr>', opts)
 end
 
+local function setup_preview(bufnr)
+  vim.api.nvim_buf_set_option(bufnr, 'filetype', 'json')
+end
+
+local M = {}
+
 M.open = function(args)
-  delete_all_buffers()
-
-  local bufnr = create_buffer ''
-  local win = show_window(bufnr)
-  -- vim.api.nvim_buf_set_var(bufnr, KUBECTL_ARGS, args)
-
-  update_buffer(bufnr, { '...waiting...' })
-
-  local on_exit = function(job, errorlevel)
-    vim.schedule(function()
-      update_buffer(bufnr, job:result())
-      M.setup_keys(bufnr)
-    end)
-  end
-
-  Job
-    :new({
-      command = 'docker',
-      args = { 'volume', 'ls', unpack(args) },
-      on_exit = on_exit,
-    })
-    :start()
+  Sidebar.from_job {
+    command = 'docker',
+    args = { 'volume', 'ls', unpack(args) },
+    setup_buffer = setup_sidebar,
+  }
 end
 
 M.open_child = function()
-  local current_line = get_current_line(0, 0)
+  local current_line = Sidebar.get_current()
   local volume = string.match(current_line, '^%S+%s+(%S+)')
 
-  Preview.from_command {
+  Preview.from_job {
     command = 'docker',
     args = { 'volume', 'inspect', volume },
-    filetype = 'json',
+    setup_buffer = setup_preview,
   }
 end
 

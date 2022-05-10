@@ -1,6 +1,17 @@
-local cmdline = require('nvim-sidebar.cmdline')
-
 local M = {}
+
+local function split(args)
+  local head = nil
+  local tail = {}
+  for idx, arg in ipairs(args) do
+    if idx == 1 then
+      head = arg
+    else
+      table.insert(tail, arg)
+    end
+  end
+  return head, tail
+end
 
 local function command(namespace)
     local fn = function(args)
@@ -37,7 +48,7 @@ M.jira_find_issues = command('nvim-sidebar.impl.jira_find_issues')
 M.python_ast = command('nvim-sidebar.impl.python-ast')
 
 M.execute = function(args)
-    local cmd, argv = cmdline.split(args)
+    local cmd, argv = split(args)
     local fn = M[cmd]
     if fn == nil then
         vim.api.nvim_echo({

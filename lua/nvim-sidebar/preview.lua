@@ -1,64 +1,44 @@
-local Job = require 'plenary.job'
+local base = require 'nvim-sidebar.base'
+local apply_job = base.apply_job
+local plugin_path = base.plugin_path
+
 local Path = require 'plenary.path'
 
-local function update_buffer(bufnr, lines)
-  vim.api.nvim_buf_set_option(bufnr, 'modifiable', true)
-  local last_line = vim.api.nvim_buf_line_count(bufnr)
-  vim.api.nvim_buf_set_lines(bufnr, 0, last_line, false, lines)
-  vim.api.nvim_buf_set_option(bufnr, 'modifiable', false)
-end
-
-local function from_command(options)
-  local command = options.command
-  local args = options.args
-  local follow = options.follow
-  local filetype = options.filetype
-
+local function from_job(options)
   vim.cmd 'wincmd l'
   local bufnr = vim.api.nvim_create_buf(true, true)
-  --
+
   vim.api.nvim_buf_set_option(bufnr, 'buftype', 'nofile')
   vim.api.nvim_win_set_buf(0, bufnr)
 
-  update_buffer(bufnr, { '...waiting...' })
-
-  local on_exit = function(job, errorlevel)
-    vim.schedule(function()
-      update_buffer(bufnr, job:result())
-
-      if filetype ~= nil then
-        vim.api.nvim_buf_set_option(bufnr, 'filetype', filetype)
-      end
-
-      if follow then
-        local last_line = vim.api.nvim_buf_line_count(bufnr)
-        vim.api.nvim_win_set_cursor(0, { last_line, 0 })
-      end
-    end)
-  end
-
-  Job:new({ command = command, args = args, on_exit = on_exit }):start()
+  apply_job(bufnr, {
+    command = options.command,
+    args = options.args,
+    setup_buffer = options.setup_buffer,
+  })
 end
 
-local function from_script(options)
-  local script = options.script
-  local args = options.args or {}
-  local follow = options.follow
-  local filetype = options.filetype
+local function from_python(options)
+  local script_path = Path:new(plugin_path(), 'scripts', options.script)
 
-  local str = debug.getinfo(2, 'S').source:sub(2)
-  local plugin_path = Path:new(str):parent():parent():parent():parent()
-  local script_path = Path:new(plugin_path, 'scripts', script)
-
-  return from_command {
+  return from_job {
     command = 'python3',
-    args = { tostring(script_path), unpack(args) },
-    follow = follow,
-    filetype = filetype,
+    args = { tostring(script_path), unpack(options.args or {}) },
+    setup_buffer = options.setup_buffer,
   }
 end
 
+local function from_file(filename, row)
+  local commands = { 'wincmd l', 'edit ' .. filename }
+  if row ~= nil then
+    table.insert(commands, row)
+  end
+
+  vim.cmd(table.concat(commands, ' | '))
+end
+
 return {
-  from_command = from_command,
-  from_script = from_script,
+  from_job = from_job,
+  from_python = from_python,
+  from_file = from_file,
 }
