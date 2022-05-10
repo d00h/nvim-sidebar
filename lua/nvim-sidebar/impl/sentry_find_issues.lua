@@ -7,6 +7,7 @@ local get_current_line = require('nvim-sidebar.buffer').get_current_line
 local show_window = require('nvim-sidebar.window').show
 local create_script_args = require('nvim-sidebar.script').create_args
 
+local Preview = require 'nvim-sidebar.preview'
 local Job = require 'plenary.job'
 
 local M = {}
@@ -40,7 +41,7 @@ M.open = function(args)
   Job
     :new({
       command = 'python3',
-      args = create_script_args('impl/sentry.py', 'find-issues', unpack(args)),
+      args = create_script_args('sentry.py', 'find-issues', unpack(args)),
       on_exit = on_exit,
     })
     :start()
@@ -50,10 +51,11 @@ M.open_child = function()
   local current_line = get_current_line(0, 0)
   local issue = string.match(current_line, '^%d+')
 
-  vim.cmd 'wincmd l'
-  local bufnr = vim.api.nvim_create_buf(true, true)
-
-  update_buffer_from_job(bufnr, 'python3', create_script_args('impl/sentry.py', 'cat-issue', tostring(issue)))
+  Preview.from_script {
+    script = 'sentry.py',
+    args = { 'cat-issue', tostring(issue) },
+    filetype = 'json',
+  }
 end
 
 return M

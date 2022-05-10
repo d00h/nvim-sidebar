@@ -1,10 +1,11 @@
 local create_buffer = require('nvim-sidebar.buffer').create
 local update_buffer = require('nvim-sidebar.buffer').update
-local update_buffer_from_job = require('nvim-sidebar.buffer').update_from_job
 local delete_all_buffers = require('nvim-sidebar.buffer').delete_all
 local get_current_line = require('nvim-sidebar.buffer').get_current_line
 
 local last_pos = require 'nvim-sidebar.last_pos'
+
+local Preview = require 'nvim-sidebar.preview'
 
 local show_window = require('nvim-sidebar.window').show
 local create_script_args = require('nvim-sidebar.script').create_args
@@ -43,7 +44,7 @@ M.open = function(args)
   Job
     :new({
       command = 'python3',
-      args = create_script_args('impl/jira.py', 'find-issues', unpack(args)),
+      args = create_script_args('jira.py', 'find-issues', unpack(args)),
       on_exit = on_exit,
     })
     :start()
@@ -54,10 +55,11 @@ M.open_child = function()
   local current_line = get_current_line(0, 0)
   local issue = string.match(current_line, '^[^:]+')
 
-  vim.cmd 'wincmd l'
-  local bufnr = vim.api.nvim_create_buf(true, true)
-
-  update_buffer_from_job(bufnr, 'python3', create_script_args('impl/jira.py', 'get-issue', tostring(issue)))
+  Preview.from_script {
+    script = 'jira.py',
+    args = { 'get-issue', tostring(issue) },
+    filetype = 'json',
+  }
 end
 
 return M

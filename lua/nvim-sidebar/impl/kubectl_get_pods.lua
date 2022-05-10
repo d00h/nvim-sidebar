@@ -7,6 +7,7 @@ local get_buffer_var = require('nvim-sidebar.buffer').get_var
 local show_window = require('nvim-sidebar.window').show
 
 local Job = require 'plenary.job'
+local Preview = require 'nvim-sidebar.preview'
 
 local NAMESPACE = 'nvim-sidebar.impl.kubectl_get_pods'
 -- -----------------------------------------------------------------------------
@@ -53,30 +54,12 @@ M.open_child = function()
   local pod = string.match(current_line, '^%S+')
   local kubectl_args = get_buffer_var(0, KUBECTL_ARGS, {})
 
-  vim.cmd 'wincmd l'
-  local bufnr = vim.api.nvim_create_buf(true, true)
-  -- vim.api.nvim_buf_set_name(bufnr, 'logs')
-  --
-  vim.api.nvim_buf_set_option(bufnr, 'buftype', 'nofile')
-  vim.api.nvim_win_set_buf(0, bufnr)
-
-  update_buffer(bufnr, { '...waiting...' })
-
-  local on_exit = function(job, errorlevel)
-    vim.schedule(function()
-      update_buffer(bufnr, job:result())
-      local last_line = vim.api.nvim_buf_line_count(bufnr)
-      vim.api.nvim_win_set_cursor(0, { last_line, 0 })
-    end)
-  end
-
-  Job
-    :new({
-      command = 'kubectl',
-      args = { 'logs', pod, unpack(kubectl_args) },
-      on_exit = on_exit,
-    })
-    :start()
+  Preview.from_command {
+    command = 'kubectl',
+    args = { 'logs', pod, unpack(kubectl_args) },
+    follow = true,
+    filetype = 'log',
+  }
 end
 
 M.open_parent = function()
