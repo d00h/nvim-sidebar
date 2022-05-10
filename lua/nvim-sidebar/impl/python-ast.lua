@@ -75,7 +75,7 @@ M.open = function(args)
   Job
     :new({
       command = 'python3',
-      args = create_script_args('impl/python-ast.py', unpack(args)),
+      args = create_script_args('python-ast.py', unpack(args)),
       on_exit = on_exit,
     })
     :start()

@@ -41,7 +41,7 @@ M.open = function(args)
   Job
     :new({
       command = 'python3',
-      args = create_script_args('impl/sentry.py', 'find-projects', unpack(args)),
+      args = create_script_args('sentry.py', 'find-projects', unpack(args)),
       on_exit = on_exit,
     })
     :start()
