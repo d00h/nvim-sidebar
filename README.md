@@ -1,6 +1,6 @@
 # Unificated sidebar for different sources
 
-![menu](./doc/menu.jpg)
+![menu](./doc/menu.png)
 
 # Sidebar
 
