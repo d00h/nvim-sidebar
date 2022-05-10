@@ -40,6 +40,7 @@ M.show = function(bufnr)
     win = create_sidebar()
   end
   vim.api.nvim_win_set_buf(win, bufnr)
+  vim.cmd('setlocal winhighlight=Normal:ColorColumn,EndOfBuffer:ColorColumn')
   return win
 end
 
