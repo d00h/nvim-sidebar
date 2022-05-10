@@ -5,47 +5,38 @@
 # Sidebar
 
 ```vimscript
-
 Sidebar ls 
-Sidebar tree 
+Sidebar ls /etc
 
-Sidebar buffers  ??
+Sidebar buffers
 
-Sidebar git-log 
-Sidebar git-diff
-Sidebar git-status
+Sidebar git_branch
+Sidebar git_show_commit -1
+Sidebar git_status
+Sidebar git_log
+Sidebar git_find_roots
 
-Sidebar symbols 
-Sidebar flask-routes
-Sidebar pytest 
-Sidebar pytest-fixtures
+Sidebar ag (TODO|BUG|FIXME|KLUDGE|BOOKMARK):
 
-Sidebar bookmarks 
+Sidebar python_ast find-decorators ^route$'
+Sidebar python_ast find-decorators ^fixture$'
+Sidebar python_ast find-functions ^test_'
 
 Sidebar menu
 
-Sidebar justfile 
+Sidebar docker_ps 
+Sidebar docker_images 
+Sidebar docker_volumes 
 
-Sidebar sentry-projects
-Sidebar sentry-issues
-Sidebar sentry-exceptions
+Sidebar kubectl_get_contexts
+Sidebar kubectl_get_namespaces
+Sidebar kubectl_get_pods --namespace=stage
 
-Sidebar kubectl-contexts
-Sidebar kubectl-namespaces 
-Sidebar kubectl-pods
+Sidebar jira_find_issues project=my_project
 
-Sidebar todo
-Sidebar org-mode  ??
-Sidebar scratch
-Sidebar agenda 
-
-Sidebar profiler <filename>
-
+Sidebar sentry_find_projects
+Sidebar sentry_find_issues my_project 
 ```
-
-# Preview
-
-
 
 
 
