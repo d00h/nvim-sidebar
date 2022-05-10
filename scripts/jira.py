@@ -69,7 +69,7 @@ class JiraClient:
         return '\n'.join([
             f'# {key} {summary} ({status}) {assignee}',
             '',
-            f'Создано: {created}',
+            f'Created: {created}',
             '',
             url,
             '',
