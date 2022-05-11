@@ -26,11 +26,11 @@ M.open = function(args)
 end
 
 M.open_child = function()
-  local selected_row  = Sidebar.get_current_row()
+  local selected_row = Sidebar.get_current_row()
   local filename, row = unpack(parse(0, selected_row))
 
   if filename ~= nil then
-    Preview.from_file(filename, row)
+    Preview.from_file { filename = filename, row = row }
   end
 end
 

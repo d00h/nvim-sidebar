@@ -19,7 +19,7 @@ local function setup_sidebar(bufnr)
   nvim_buf_set_keymap(bufnr, 'n', 'q', '<cmd>bdelete<cr>', opts)
 
   nvim_buf_create_user_command(bufnr, 'Mkfile', function(a)
-    Preview.from_file(a['args'])
+    Preview.from_file { filename = a['args'] }
   end, { nargs = 1 })
 
   nvim_buf_create_user_command(bufnr, 'Mkdir', function(a)
@@ -34,7 +34,6 @@ local function setup_sidebar(bufnr)
       vim.cmd 'Sidebar ls'
     end
   end, { nargs = 1 })
-
 end
 
 local M = {}
@@ -61,7 +60,7 @@ M.open_child = function()
   end
 
   if selected:is_file() then
-    Preview.from_file(tostring(selected))
+    Preview.from_file { filename = tostring(selected) }
     return
   end
 end
