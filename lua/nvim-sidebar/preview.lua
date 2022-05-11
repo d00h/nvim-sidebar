@@ -28,8 +28,20 @@ local function from_python(options)
   }
 end
 
-local function from_file(filename, row)
-  local commands = { 'wincmd l', 'edit ' .. filename }
+local function from_file(options)
+  local filename = options.filename
+  local pattern = options.pattern
+  local row = options.row
+  local commands = { 'wincmd l' }
+
+  if filename ~= nil then
+    table.insert(commands, 'edit ' .. filename)
+  end
+
+  if pattern ~= nil then
+    table.insert(commands, '/' .. pattern .. '/')
+  end
+
   if row ~= nil then
     table.insert(commands, row)
   end

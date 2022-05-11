@@ -29,7 +29,7 @@ M.open_child = function()
   local filename, row = unpack(parse(0, selected_row))
 
   if filename ~= nil then
-    Preview.from_file(filename, row)
+    Preview.from_file { filename = filename, row = row }
   end
 end
 

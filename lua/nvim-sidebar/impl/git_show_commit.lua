@@ -29,7 +29,7 @@ M.open_child = function()
   local selected = Path:new(filename)
 
   if selected:is_file() then
-    Preview.from_file(filename, nil)
+    Preview.from_file { filename = filename }
   end
 end
 

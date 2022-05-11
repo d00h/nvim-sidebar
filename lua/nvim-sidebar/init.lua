@@ -23,6 +23,7 @@ end
 
 M.buffers = command('nvim-sidebar.impl.buffers')
 M.ag = command('nvim-sidebar.impl.ag')
+M.ctags = command('nvim-sidebar.impl.ctags')
 M.ls = command('nvim-sidebar.impl.ls')
 M.menu = command('nvim-sidebar.impl.menu')
 
