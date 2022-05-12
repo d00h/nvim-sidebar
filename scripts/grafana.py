@@ -43,14 +43,13 @@ class GrafanaClient:
             resp.raise_for_status()
         return resp
 
+    def health(self):
+        resp = self.request_get('api/health')
+        return resp.json()
+
     def find_datasources(self):
         resp = self.request_get('api/datasources')
         return resp.json()
-        # for item in resp.json():
-        #     project_name = item.get('name')
-        #     project_status = item.get('status')
-        #     if project_name and project_status == 'active':
-        #         yield project_name
 
     def query(self, query):
         """
@@ -64,9 +63,9 @@ class GrafanaClient:
                 "queries": [
                     {
                       "refId": "A",
+                      "datasourceId": 1,
                       "intervalMs": 86400000,
                       "maxDataPoints": 1092,
-                      "datasourceId": 86,
                       "rawSql": query,
                       "format": "table"
                     }
@@ -88,16 +87,23 @@ def create_parser() -> ArgumentParser:
     query_parser = subparsers.add_parser('query')
     query_parser.set_defaults(command=command_query)
 
+    health_parser = subparsers.add_parser('health')
+    health_parser.set_defaults(command=command_health)
+
     return parser
+
+# eyJrIjoiQUkzeVFUR0ZqZjdYZG0wSDlTc1ZJdWFKS0lUbmNWYmsiLCJuIjoiZDAwaDIiLCJpZCI6MX0=
+
+
+def command_health(grafana: GrafanaClient, args: ArgumentNamespace):
+    health = grafana.health()
+    pprint(health)
 
 
 def command_find_projects(grafana: GrafanaClient, args: ArgumentNamespace):
     print('# Datasources\n')
     datasources = grafana.find_datasources()
     pprint(datasources)
-    # projects.sort()
-    # for project in projects:
-    #     print(project)
 
 
 def command_query(grafana: GrafanaClient, args: ArgumentNamespace):

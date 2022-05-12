@@ -31,7 +31,7 @@ local function create_sidebar_buffer(name)
     vim.api.nvim_buf_delete(bufnr, { force = true })
   end
 
-  local bufnr = vim.api.nvim_create_buf(true, false)
+  local bufnr = vim.api.nvim_create_buf(false, false)
   vim.api.nvim_buf_set_option(bufnr, 'buftype', 'nofile')
   vim.api.nvim_buf_set_name(bufnr, name)
   vim.api.nvim_buf_set_var(bufnr, SIDEBAR_TAG, true)
