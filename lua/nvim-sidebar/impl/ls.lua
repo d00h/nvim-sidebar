@@ -66,7 +66,10 @@ M.open_child = function()
 end
 
 M.open_parent = function()
-  local current = Path:new(vim.fn.getcwd())
+  local cwd = vim.fn.getcwd()
+  LastPos.store_cursor(0, NAMESPACE, cwd)
+
+  local current = Path:new(cwd)
   vim.cmd('Sidebar ls ' .. tostring(current:parent()))
 end
 
