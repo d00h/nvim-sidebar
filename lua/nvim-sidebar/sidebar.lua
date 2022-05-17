@@ -16,7 +16,7 @@ local function show_sidebar_window(bufnr)
     vim.cmd '40vsplit'
     win = vim.api.nvim_get_current_win()
     vim.api.nvim_win_set_option(win, 'wrap', false)
-    vim.api.nvim_win_set_option(win, 'cursorline', true)
+    -- vim.api.nvim_win_set_option(win, 'cursorline', true)
     vim.api.nvim_win_set_var(win, SIDEBAR_TAG, true)
   end
 
