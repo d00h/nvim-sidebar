@@ -30,7 +30,7 @@ end
 
 local function from_file(options)
   local filename = options.filename
-  local pattern = options.pattern
+  local text = options.text
   local row = options.row
   local commands = { 'wincmd l' }
 
@@ -38,8 +38,8 @@ local function from_file(options)
     table.insert(commands, 'edit ' .. filename)
   end
 
-  if pattern ~= nil then
-    table.insert(commands, '/' .. pattern .. '/')
+  if text ~= nil then
+    table.insert(commands, '/\\M' .. text)
   end
 
   if row ~= nil then

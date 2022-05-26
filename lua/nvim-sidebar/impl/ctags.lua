@@ -30,9 +30,7 @@ end
 
 M.open_child = function()
   local selected = Sidebar.get_current()
-  Preview.from_file {
-    pattern = '^' .. selected .. '$',
-  }
+  Preview.from_file { text = selected }
 end
 
 return M
